@@ -1,0 +1,129 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="page-content">
+  <div class="perfil-wrapper">
+    
+    <!-- Card de Perfil -->
+    <ion-card class="perfil-card">
+      <ion-card-content>
+        <div class="perfil-header">
+          <div class="perfil-avatar">
+            <ion-icon name="person"></ion-icon>
+          </div>
+          <div class="perfil-info">
+            <h2>{{ nomeUtilizador }}</h2>
+            <p>Gestão de Atividades</p>
+          </div>
+        </div>
+
+        <div class="perfil-stats">
+          <div class="stat-item atividades-item">
+            <ion-icon name="fitness"></ion-icon>
+            <h3>{{ totalAtividades }}</h3>
+            <p>Atividades</p>
+          </div>
+          <div class="stat-item treino-item">
+            <ion-icon name="time"></ion-icon>
+            <h3>{{ totalHoras }}</h3>
+            <p>Treino</p>
+          </div>
+          <div class="stat-item pontos-item">
+            <ion-icon name="cash"></ion-icon>
+            <h3>{{ totalPontos | number:'1.0-0' }}</h3>
+            <p>Pontos</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Tema da Aplicação -->
+    <ion-card class="tema-card">
+      <ion-card-content>
+        <div class="tema-content">
+          <div>
+            <h3>Tema da Aplicação</h3>
+            <p>{{ modoEscuro ? 'Paleta Escura' : 'Paleta Clara' }}</p>
+          </div>
+          <ion-toggle [(ngModel)]="modoEscuro" (ionChange)="alterarTema()"></ion-toggle>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Resumo Geral -->
+    <ion-card class="resumo-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="bar-chart"></ion-icon>
+          Resumo Geral
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="resumo-item pontos-resumo">
+          <span class="resumo-label">
+            <ion-icon name="cash"></ion-icon>
+            Total de pontos:
+          </span>
+          <span class="resumo-valor">{{ totalPontos | number:'1.0-0' }} pts</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Total de atividades:</span>
+          <span class="resumo-valor">{{ totalAtividades }}</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Total de minutos:</span>
+          <span class="resumo-valor">{{ totalMinutos }} min</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Total de horas:</span>
+          <span class="resumo-valor">{{ totalHorasDetalhado }}</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Atividades favoritas:</span>
+          <span class="resumo-valor">{{ totalFavoritos }}</span>
+        </div>
+        <div class="resumo-item">
+          <span class="resumo-label">Duração média:</span>
+          <span class="resumo-valor">{{ duracaoMedia }} min</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botão de Logout -->
+    <ion-button expand="block" color="danger" (click)="logout()" class="logout-button">
+      <ion-icon name="log-out" slot="start"></ion-icon>
+      Sair
+    </ion-button>
+
+  </div>
+</ion-content>
+
+<ion-tab-bar slot="bottom" class="custom-tab-bar">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-selected">
+    <ion-icon name="home"></ion-icon>
+    <ion-label>Início</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="lista" routerLink="/lista-tarefas" routerLinkActive="tab-selected">
+    <ion-icon name="list"></ion-icon>
+    <ion-label>Lista</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="adicionar" class="add-button" routerLink="/adicionar-tarefa" routerLinkActive="tab-selected">
+    <ion-icon name="add-circle"></ion-icon>
+    <ion-label>Adicionar</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="stats" routerLink="/estatisticas" routerLinkActive="tab-selected">
+    <ion-icon name="stats-chart"></ion-icon>
+    <ion-label>Stats</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="perfil" routerLink="/perfil" routerLinkActive="tab-selected">
+    <ion-icon name="person"></ion-icon>
+    <ion-label>Perfil</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

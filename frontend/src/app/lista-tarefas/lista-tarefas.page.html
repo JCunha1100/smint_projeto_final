@@ -1,0 +1,243 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Lista de Tarefas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="page-content">
+  <div class="content-wrapper">
+    
+    <!-- Filtros e Ordenação -->
+    <ion-card class="filtros-card">
+      <ion-card-header>
+        <ion-card-title>Filtros e Ordenação</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="12" size-md="4">
+              <ion-item>
+                <ion-label position="stacked">Tipo de Atividade</ion-label>
+                <ion-select [(ngModel)]="filtroTipo" (ionChange)="aplicarFiltros()" placeholder="Todas" interface="popover" class="custom-select">
+                  <ion-select-option value="">Todas</ion-select-option>
+                  <ion-select-option value="corrida">Corrida</ion-select-option>
+                  <ion-select-option value="caminhada">Caminhada</ion-select-option>
+                  <ion-select-option value="ciclismo">Ciclismo</ion-select-option>
+                  <ion-select-option value="natacao">Natação</ion-select-option>
+                  <ion-select-option value="musculacao">Musculação</ion-select-option>
+                  <ion-select-option value="yoga">Yoga</ion-select-option>
+                  <ion-select-option value="futebol">Futebol</ion-select-option>
+                  <ion-select-option value="basquete">Basquete</ion-select-option>
+                  <ion-select-option value="volei">Vôlei</ion-select-option>
+                  <ion-select-option value="outro">Outro</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            
+            <ion-col size="12" size-md="4">
+              <ion-item>
+                <ion-label position="stacked">Intensidade</ion-label>
+                <ion-select [(ngModel)]="filtroIntensidade" (ionChange)="aplicarFiltros()" placeholder="Todas" interface="popover" class="custom-select">
+                  <ion-select-option value="">Todas</ion-select-option>
+                  <ion-select-option value="baixa">Baixa</ion-select-option>
+                  <ion-select-option value="media">Média</ion-select-option>
+                  <ion-select-option value="alta">Alta</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+            
+            <ion-col size="12" size-md="4">
+              <ion-item>
+                <ion-label position="stacked">Ordenação</ion-label>
+                <ion-select [(ngModel)]="ordenacao" (ionChange)="aplicarFiltros()" placeholder="Selecione" interface="popover" class="custom-select">
+                  <ion-select-option value="data-desc">Data (Mais Recente)</ion-select-option>
+                  <ion-select-option value="data-asc">Data (Mais Antiga)</ion-select-option>
+                  <ion-select-option value="duracao-desc">Duração (Maior)</ion-select-option>
+                  <ion-select-option value="duracao-asc">Duração (Menor)</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          
+          <ion-row class="ion-align-items-center ion-justify-content-between filtros-actions">
+            <ion-col size="auto">
+              <ion-button 
+                size="small" 
+                [fill]="filtroFavoritas ? 'solid' : 'outline'" 
+                [color]="filtroFavoritas ? 'warning' : 'medium'"
+                (click)="toggleFiltroFavoritas()">
+                <ion-icon name="star" slot="start"></ion-icon>
+                Favoritos
+              </ion-button>
+            </ion-col>
+            <ion-col size="auto">
+              <ion-button size="small" fill="outline" color="primary" (click)="limparFiltros()">
+                <ion-icon name="close-circle-outline" slot="start"></ion-icon>
+                Limpar Filtros
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+    
+    <!-- Tarefas Pendentes -->
+    <div class="section-header">
+      <h2>Tarefas Pendentes</h2>
+      <ion-badge color="primary">{{ tarefasPendentes.length }}</ion-badge>
+    </div>
+
+    <div *ngIf="tarefasPendentes.length === 0" class="empty-state">
+      <ion-icon name="clipboard-outline"></ion-icon>
+      <p>Nenhuma tarefa pendente</p>
+      <ion-button routerLink="/adicionar-tarefa" size="small">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Adicionar Tarefa
+      </ion-button>
+    </div>
+
+    <ion-card *ngFor="let tarefa of tarefasPendentes" class="tarefa-card">
+      <ion-card-header>
+        <div class="tarefa-header">
+          <div class="tarefa-tipo">
+            <ion-icon [name]="getIconeTipo(tarefa.tipoAtividade)"></ion-icon>
+            <ion-card-title>{{ getNomeTipo(tarefa.tipoAtividade) }}</ion-card-title>
+          </div>
+          <div class="header-actions">
+            <ion-button fill="clear" (click)="toggleFavorito(tarefa.id, $event)">
+              <ion-icon 
+                slot="icon-only" 
+                [name]="tarefa.favorita ? 'star' : 'star-outline'"
+                [color]="tarefa.favorita ? 'warning' : 'medium'">
+              </ion-icon>
+            </ion-button>
+            <ion-badge color="warning" class="pontos-badge">
+              <ion-icon name="cash"></ion-icon>
+              {{ tarefa.pontos | number:'1.0-0' }} pts
+            </ion-badge>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="tarefa-detalhes">
+          <div class="detalhe-item">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ tarefa.duracao }} min</span>
+          </div>
+          <div class="detalhe-item">
+            <ion-icon name="speedometer-outline"></ion-icon>
+            <span>{{ getNomeIntensidade(tarefa.intensidade) }}</span>
+          </div>
+          <div class="detalhe-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ formatarData(tarefa.dataAtividade) }}</span>
+          </div>
+          <div class="detalhe-item" *ngIf="tarefa.local">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ tarefa.local }}</span>
+          </div>
+        </div>
+
+        <div class="descricao" *ngIf="tarefa.descricao">
+          <p>{{ tarefa.descricao }}</p>
+        </div>
+
+        <div class="acoes">
+          <ion-button expand="block" color="success" (click)="concluirTarefa(tarefa)">
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            Concluir e Ganhar Pontos
+          </ion-button>
+          <ion-button expand="block" color="primary" (click)="editarTarefa(tarefa.id)">
+            <ion-icon name="create" slot="start"></ion-icon>
+            Editar
+          </ion-button>
+          <ion-button expand="block" color="danger" (click)="removerTarefa(tarefa.id)">
+            <ion-icon name="trash" slot="start"></ion-icon>
+            Remover
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Tarefas Concluídas -->
+    <div class="section-header" *ngIf="tarefasConcluidas.length > 0">
+      <h2>Tarefas Concluídas</h2>
+      <ion-badge color="success">{{ tarefasConcluidas.length }}</ion-badge>
+    </div>
+
+    <ion-card *ngFor="let tarefa of tarefasConcluidas" class="tarefa-card concluida">
+      <ion-card-header>
+        <div class="tarefa-header">
+          <div class="tarefa-tipo">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <ion-card-title>{{ getNomeTipo(tarefa.tipoAtividade) }}</ion-card-title>
+          </div>
+          <div class="header-actions">
+            <ion-button fill="clear" (click)="toggleFavorito(tarefa.id, $event)">
+              <ion-icon 
+                slot="icon-only" 
+                [name]="tarefa.favorita ? 'star' : 'star-outline'"
+                [color]="tarefa.favorita ? 'warning' : 'medium'">
+              </ion-icon>
+            </ion-button>
+            <ion-badge color="success" class="pontos-badge">
+              <ion-icon name="cash"></ion-icon>
+              {{ tarefa.pontos | number:'1.0-0' }} pts
+            </ion-badge>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="tarefa-detalhes">
+          <div class="detalhe-item">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ tarefa.duracao }} min</span>
+          </div>
+          <div class="detalhe-item">
+            <ion-icon name="speedometer-outline"></ion-icon>
+            <span>{{ getNomeIntensidade(tarefa.intensidade) }}</span>
+          </div>
+          <div class="detalhe-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <span>{{ formatarData(tarefa.dataAtividade) }}</span>
+          </div>
+          <div class="detalhe-item" *ngIf="tarefa.local">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ tarefa.local }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="bottom-spacing"></div>
+  </div>
+</ion-content>
+
+<ion-tab-bar slot="bottom" class="custom-tab-bar">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-selected">
+    <ion-icon name="home"></ion-icon>
+    <ion-label>Início</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="lista" routerLink="/lista-tarefas" routerLinkActive="tab-selected">
+    <ion-icon name="list"></ion-icon>
+    <ion-label>Lista</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="adicionar" class="add-button" routerLink="/adicionar-tarefa" routerLinkActive="tab-selected">
+    <ion-icon name="add-circle"></ion-icon>
+    <ion-label>Adicionar</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="stats" routerLink="/estatisticas" routerLinkActive="tab-selected">
+    <ion-icon name="stats-chart"></ion-icon>
+    <ion-label>Stats</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="perfil" routerLink="/perfil" routerLinkActive="tab-selected">
+    <ion-icon name="person"></ion-icon>
+    <ion-label>Perfil</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

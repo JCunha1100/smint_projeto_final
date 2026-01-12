@@ -1,0 +1,26 @@
+// For information on how to create your own theme, please refer to:
+// https://ionicframework.com/docs/theming/
+
+// Definições de cores para modo claro
+:root {
+  --color-primary: #33658A;
+  --color-accent: #F0C808;
+  --color-background: #FFFFFF;
+  --color-card: #ffffff;
+  --color-text-primary: #333;
+  --color-text-secondary: #666;
+  --color-border: #e0e0e0;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+}
+
+// Definições de cores para modo escuro
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1e1e1e;
+    --color-card: #2d2d2d;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #b0b0b0;
+    --color-border: #3d3d3d;
+    --color-shadow: rgba(0, 0, 0, 0.3);
+  }
+}

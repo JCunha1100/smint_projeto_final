@@ -1,0 +1,111 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Início</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="home-content">
+  <div class="dashboard-wrapper">
+    
+    <!-- Saudação -->
+    <div class="greeting-section">
+      <h1>Olá {{ nomeUtilizador }}!</h1>
+      <p>Veja o resumo das suas atividades</p>
+    </div>
+
+    <!-- Pontos Disponíveis -->
+    <ion-card class="pontos-card">
+      <ion-card-content>
+        <div class="pontos-content">
+          <ion-icon name="trophy"></ion-icon>
+          <div>
+            <h2>{{ totalPontos | number:'1.0-0' }}</h2>
+            <p>Pontos Totais</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Atividades de Hoje -->
+    <ion-card class="stats-hoje-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="calendar"></ion-icon>
+          Hoje
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <h3>{{ atividadesHoje }}</h3>
+            <p>Atividades</p>
+          </div>
+          <div class="stat-box">
+            <h3>{{ minutosHoje }}</h3>
+            <p>Minutos</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Atividades Ativas -->
+    <ion-card class="atividades-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="list"></ion-icon>
+          Atividades Ativas
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="atividadesAtivas.length === 0" class="empty-message">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <p>Não existe nenhuma atividade ativa no momento</p>
+        </div>
+        <div *ngIf="atividadesAtivas.length > 0" class="atividades-list">
+          <div *ngFor="let atividade of atividadesAtivas" class="atividade-item">
+            <ion-icon [name]="getIconeTipo(atividade.tipoAtividade)"></ion-icon>
+            <div class="atividade-info">
+              <h4>{{ getNomeTipo(atividade.tipoAtividade) }}</h4>
+              <p>{{ atividade.duracao }} min • {{ atividade.pontos | number:'1.0-0' }} pts</p>
+            </div>
+            <ion-badge [color]="atividade.concluida ? 'success' : (atividade.favorita ? 'warning' : 'primary')">
+              {{ atividade.concluida ? 'Concluída' : (atividade.favorita ? 'Favorita' : 'Ativa') }}
+            </ion-badge>
+          </div>
+        </div>
+        <ion-button expand="block" routerLink="/lista-tarefas" fill="clear" size="small" *ngIf="atividadesAtivas.length > 0">
+          Ver todas
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>
+
+<ion-tab-bar slot="bottom" class="custom-tab-bar">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-selected">
+    <ion-icon name="home"></ion-icon>
+    <ion-label>Início</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="lista" routerLink="/lista-tarefas" routerLinkActive="tab-selected">
+    <ion-icon name="list"></ion-icon>
+    <ion-label>Lista</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="adicionar" class="add-button" routerLink="/adicionar-tarefa" routerLinkActive="tab-selected">
+    <ion-icon name="add-circle"></ion-icon>
+    <ion-label>Adicionar</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="stats" routerLink="/estatisticas" routerLinkActive="tab-selected">
+    <ion-icon name="stats-chart"></ion-icon>
+    <ion-label>Stats</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="perfil" routerLink="/perfil" routerLinkActive="tab-selected">
+    <ion-icon name="person"></ion-icon>
+    <ion-label>Perfil</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

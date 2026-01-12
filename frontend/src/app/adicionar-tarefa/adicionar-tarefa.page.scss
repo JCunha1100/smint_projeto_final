@@ -1,0 +1,268 @@
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+ion-content {
+  animation: slideIn 0.3s ease-out;
+}
+
+.page-content {
+  --background: var(--color-background, #FFFFFF);
+}
+
+.form-wrapper {
+  padding: 20px;
+  padding-bottom: 80px; // Espaço para a nav bar
+}
+
+ion-item {
+  --background: transparent;
+  margin-bottom: 15px;
+  
+  ion-label {
+    font-weight: 600;
+    color: var(--color-primary, #33658A);
+    margin-bottom: 8px;
+  }
+
+  ion-input, ion-textarea {
+    --background: var(--color-card, #ffffff);
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --color: var(--color-text-primary, #000000);
+    --placeholder-color: var(--color-text-secondary, #666666);
+    border-radius: 8px;
+    margin-top: 8px;
+  }
+
+  ion-select {
+    --background: var(--color-card, #ffffff);
+    --padding-start: 12px;
+    --padding-end: 40px;
+    --placeholder-color: var(--color-text-secondary, #666666);
+    --placeholder-opacity: 1;
+    border-radius: 8px;
+    margin-top: 8px;
+    min-height: 48px;
+    width: 100%;
+    color: var(--color-text-primary, #000000);
+    font-size: 16px;
+    
+    &::part(text) {
+      color: var(--color-text-primary, #000000);
+      opacity: 1;
+    }
+    
+    &::part(placeholder) {
+      color: var(--color-text-secondary, #666666);
+      opacity: 1;
+    }
+    
+    &::part(icon) {
+      color: var(--color-primary, #33658A);
+      opacity: 1;
+      margin-right: 12px;
+    }
+  }
+}
+
+.fatura-card {
+  margin: 20px 0;
+  background: var(--color-card, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #33658A;
+
+  ion-card-header {
+    padding: 15px;
+    background: linear-gradient(135deg, #33658A 0%, #2d5777 100%);
+    border-radius: 10px 10px 0 0;
+
+    .fatura-title {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
+  }
+
+  .fatura-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: var(--color-text-primary, #000000);
+
+    .fatura-label {
+      font-size: 14px;
+      color: var(--color-text-secondary, #666);
+    }
+
+    .fatura-valor {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-primary, #000000);
+    }
+  }
+
+  .fatura-divider {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #33658A, transparent);
+    margin: 15px 0;
+  }
+
+  .fatura-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #F0C808 0%, #e0b807 100%);
+    border-radius: 8px;
+    margin-top: 10px;
+
+    .fatura-total-label {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--color-text-primary, #000000);
+    }
+
+    .fatura-total-valor {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--color-text-primary, #000000);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      ion-icon {
+        font-size: 28px;
+      }
+    }
+  }
+}
+
+.button-group {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  ion-button {
+    --border-radius: 8px;
+    height: 48px;
+    font-weight: 600;
+    text-transform: none;
+    
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+.custom-tab-bar {
+  --background: var(--color-card, #ffffff);
+  border-top: 1px solid var(--color-border, #e0e0e0);
+  height: 60px;
+  padding-bottom: 5px;
+
+  ion-tab-button {
+    --color: #999;
+    --color-selected: var(--color-primary, #33658A);
+    font-size: 12px;
+
+    ion-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    ion-label {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    &.tab-selected {
+      ion-icon, ion-label {
+        color: var(--color-primary, #33658A);
+      }
+    }
+  }
+
+  .add-button {
+    ion-icon {
+      font-size: 32px;
+      color: var(--color-accent, #F0C808);
+    }
+
+    &.tab-selected ion-icon {
+      color: var(--color-accent, #F0C808);
+    }
+  }
+}
+// Tema Escuro
+body.tema-escuro {
+  .page-content {
+    --background: #1a1a1a;
+  }
+
+  .form-wrapper {
+    h2 {
+      color: #4a8fc4;
+    }
+  }
+
+  .form-card {
+    background: #2a2a2a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+
+    .form-group label {
+      color: #cccccc;
+    }
+
+    ion-input,
+    ion-select,
+    ion-datetime,
+    ion-textarea {
+      --background: #333333;
+      --color: #ffffff;
+      --placeholder-color: #999999;
+    }
+
+    ion-select {
+      --placeholder-color: #999999;
+    }
+  }
+
+  .pontos-info {
+    background: #1a3a52;
+
+    h3 {
+      color: #ffffff;
+    }
+
+    .pontos-valor {
+      color: var(--color-accent, #F0C808);
+    }
+  }
+
+  .custom-tab-bar {
+    --background: #2a2a2a;
+    border-top-color: #444444;
+  }
+}

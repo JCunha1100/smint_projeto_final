@@ -1,0 +1,9 @@
+<div class="notification-toast" [@slideDown] [ngClass]="getTypeClass()">
+  <div class="notification-content">
+    <ion-icon [name]="getIcon()" class="notification-icon"></ion-icon>
+    <p class="notification-message">{{ notification.message }}</p>
+  </div>
+  <button class="notification-close" (click)="closeNotification()">
+    <ion-icon name="close"></ion-icon>
+  </button>
+</div>

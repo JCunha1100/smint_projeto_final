@@ -1,0 +1,261 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Estatísticas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="page-content">
+  <div class="stats-wrapper">
+    
+    <!-- Resumo Semanal -->
+    <ion-card class="resumo-semanal-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="calendar"></ion-icon>
+          Resumo desta Semana
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="resumo-grid">
+          <div class="resumo-box">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <h3>{{ atividadesSemana }}</h3>
+            <p>Atividades</p>
+          </div>
+          <div class="resumo-box">
+            <ion-icon name="time" color="primary"></ion-icon>
+            <h3>{{ minutosSemana }}</h3>
+            <p>Minutos</p>
+          </div>
+          <div class="resumo-box">
+            <ion-icon name="cash" color="warning"></ion-icon>
+            <h3>{{ pontosSemana | number:'1.0-0' }}</h3>
+            <p>Pontos</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="stats-header">
+      <h2>Atividades da Semana</h2>
+      <p>Últimos 7 dias</p>
+    </div>
+
+    <div class="chart-container">
+      <div class="y-axis">
+        <div class="y-label" *ngFor="let value of yAxisValues">{{ value }}</div>
+      </div>
+      
+      <div class="chart-area">
+        <div class="grid-lines">
+          <div class="grid-line" *ngFor="let line of gridLines"></div>
+        </div>
+        
+        <div class="bars">
+          <div class="bar-wrapper" *ngFor="let day of chartData">
+            <div class="bar" 
+                 [style.--bar-height.%]="(day.value / maxValue) * 100">
+              <span class="bar-value" *ngIf="day.value > 0">{{ day.value }}</span>
+            </div>
+            <span class="bar-label">{{ day.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <ion-card class="leaderboard-card">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="trophy" color="warning"></ion-icon>
+          Leaderboard
+        </ion-card-title>
+        <ion-card-subtitle>Top 10 Utilizadores</ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <!-- Loading state -->
+        <div *ngIf="leaderboardLoading" class="leaderboard-loading">
+          <ion-spinner name="lines-sharp"></ion-spinner>
+          <p>A carregar ranking...</p>
+        </div>
+
+        <!-- Error state -->
+        <div *ngIf="leaderboardError" class="leaderboard-error">
+          <ion-icon name="alert-circle"></ion-icon>
+          <p>{{ leaderboardError }}</p>
+          <ion-button fill="outline" size="small" (click)="carregarLeaderboard()">
+            Tentar novamente
+          </ion-button>
+        </div>
+
+        <!-- Leaderboard content -->
+        <div *ngIf="!leaderboardLoading && !leaderboardError && leaderboardData" class="leaderboard-content">
+          
+          <!-- Posição do utilizador atual -->
+          <div class="current-user-rank" *ngIf="leaderboardData.currentUser">
+            <div class="user-info">
+              <ion-avatar>
+                <div class="avatar-placeholder">{{ leaderboardData.currentUser.name?.charAt(0) || 'U' }}</div>
+              </ion-avatar>
+              <div class="user-details">
+                <h4>{{ leaderboardData.currentUser.name || 'Utilizador' }}</h4>
+                <p>{{ getLevelTitle(leaderboardData.currentUser.level) }} • Nível {{ leaderboardData.currentUser.level }}</p>
+              </div>
+            </div>
+            <div class="user-stats">
+              <div class="rank-badge">
+                <span class="rank-number">#{{ leaderboardData.currentUser.rank }}</span>
+                <span class="rank-label">Posição</span>
+              </div>
+              <div class="score-badge">
+                <span class="score-number">{{ formatScore(leaderboardData.currentUser.totalScore) }}</span>
+                <span class="score-label">Pontos</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lista do leaderboard -->
+          <div class="leaderboard-list">
+            <div class="leaderboard-item" 
+                 *ngFor="let user of leaderboardData.leaderboard" 
+                 [class.current-user]="isCurrentUser(user.id)"
+                 [class.top-3]="user.rank <= 3">
+              
+              <div class="rank-position">
+                <ion-icon *ngIf="user.rank <= 3" 
+                          [name]="getMedalIcon(user.rank)" 
+                          [style.color]="getMedalColor(user.rank)">
+                </ion-icon>
+                <span *ngIf="user.rank > 3" class="rank-number">{{ user.rank }}</span>
+              </div>
+              
+              <div class="user-info">
+                <ion-avatar>
+                  <div class="avatar-placeholder" [style.background]="user.rank <= 3 ? getMedalColor(user.rank) : 'var(--ion-color-medium)'">
+                    {{ user.name?.charAt(0) || 'U' }}
+                  </div>
+                </ion-avatar>
+                <div class="user-details">
+                  <h4>
+                    {{ user.name || 'Utilizador' }}
+                    <ion-icon *ngIf="isCurrentUser(user.id)" name="person" color="primary"></ion-icon>
+                  </h4>
+                  <p>{{ getLevelTitle(user.level) }} • {{ user.activitiesCount }} atividades</p>
+                </div>
+              </div>
+              
+              <div class="user-score">
+                <span class="score-value">{{ formatScore(user.totalScore) }}</span>
+                <span class="score-label">pts</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info adicional -->
+          <div class="leaderboard-info" *ngIf="leaderboardData.pagination">
+            <p>Total de utilizadores: {{ leaderboardData.pagination.total }}</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Estatísticas Gerais -->
+    <div class="stats-summary">
+      <ion-card>
+        <ion-card-content>
+          <div class="summary-item">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <div>
+              <h3>{{ totalTarefas }}</h3>
+              <p>Total de Tarefas</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="summary-item">
+            <ion-icon name="time" color="primary"></ion-icon>
+            <div>
+              <h3>{{ totalMinutos }}</h3>
+              <p>Total de Minutos</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="summary-item">
+            <ion-icon name="cash" color="warning"></ion-icon>
+            <div>
+              <h3>{{ totalPontos | number:'1.0-0' }}</h3>
+              <p>Pontos Ganhos</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="summary-item">
+            <ion-icon name="trophy" color="warning"></ion-icon>
+            <div>
+              <h3>{{ desportoMaisPraticado }}</h3>
+              <p>Desporto Favorito ({{ totalDesportoMaisPraticado }}x)</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Estatísticas Mensais -->
+    <ion-card class="mensais-card" *ngIf="estatisticasMensais.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="calendar-outline"></ion-icon>
+          Estatísticas Mensais
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="mensal-item" *ngFor="let mes of estatisticasMensais">
+          <div class="mensal-info">
+            <h4>{{ formatarMes(mes.mes) }}</h4>
+            <p>{{ mes.total }} atividades • {{ mes.minutos }} min</p>
+          </div>
+          <ion-badge color="primary">{{ mes.total }}</ion-badge>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>
+
+<ion-tab-bar slot="bottom" class="custom-tab-bar">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-selected">
+    <ion-icon name="home"></ion-icon>
+    <ion-label>Início</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="lista" routerLink="/lista-tarefas" routerLinkActive="tab-selected">
+    <ion-icon name="list"></ion-icon>
+    <ion-label>Lista</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="adicionar" class="add-button" routerLink="/adicionar-tarefa" routerLinkActive="tab-selected">
+    <ion-icon name="add-circle"></ion-icon>
+    <ion-label>Adicionar</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="stats" routerLink="/estatisticas" routerLinkActive="tab-selected">
+    <ion-icon name="stats-chart"></ion-icon>
+    <ion-label>Stats</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="perfil" routerLink="/perfil" routerLinkActive="tab-selected">
+    <ion-icon name="person"></ion-icon>
+    <ion-label>Perfil</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

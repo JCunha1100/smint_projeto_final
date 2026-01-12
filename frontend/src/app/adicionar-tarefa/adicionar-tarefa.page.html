@@ -1,0 +1,203 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>{{ modoEdicao ? 'Editar Tarefa' : 'Adicionar Tarefa' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="page-content">
+  <div class="form-wrapper">
+    <form #tarefaForm="ngForm">
+      
+      <!-- Tipo de Atividade -->
+      <ion-item>
+        <ion-label position="stacked">Tipo de Atividade *</ion-label>
+        <ion-select [(ngModel)]="tarefa.tipoAtividade" name="tipoAtividade" placeholder="Selecione o tipo" (ionChange)="calcularPontos()">
+          <ion-select-option value="corrida">Corrida</ion-select-option>
+          <ion-select-option value="caminhada">Caminhada</ion-select-option>
+          <ion-select-option value="ciclismo">Ciclismo</ion-select-option>
+          <ion-select-option value="natacao">Natação</ion-select-option>
+          <ion-select-option value="musculacao">Musculação</ion-select-option>
+          <ion-select-option value="yoga">Yoga</ion-select-option>
+          <ion-select-option value="futebol">Futebol</ion-select-option>
+          <ion-select-option value="basquete">Basquete</ion-select-option>
+          <ion-select-option value="tenis">Ténis</ion-select-option>
+          <ion-select-option value="outro">Outro</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Duração -->
+      <ion-item>
+        <ion-label position="stacked">Duração (minutos) *</ion-label>
+        <ion-input 
+          type="number" 
+          [(ngModel)]="tarefa.duracao" 
+          name="duracao" 
+          placeholder="Ex: 30"
+          min="1"
+          (ionChange)="calcularPontos()">
+        </ion-input>
+      </ion-item>
+
+      <!-- Data de Atividade -->
+      <ion-item>
+        <ion-label position="stacked">Data de Atividade *</ion-label>
+        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true" #modalData>
+          <ng-template>
+            <ion-datetime 
+              id="datetime" 
+              [(ngModel)]="tarefa.dataAtividade" 
+              name="dataAtividade"
+              presentation="date"
+              [showDefaultButtons]="true"
+              doneText="OK"
+              cancelText="Cancelar">
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <!-- Hora da Atividade (Opcional) -->
+      <ion-item>
+        <ion-label position="stacked">Hora da Atividade (Opcional)</ion-label>
+        <ion-datetime-button datetime="time-picker"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true" #modalHora>
+          <ng-template>
+            <ion-datetime 
+              id="time-picker" 
+              [(ngModel)]="tarefa.hora" 
+              name="hora"
+              presentation="time"
+              [preferWheel]="true"
+              [showDefaultButtons]="true"
+              doneText="OK"
+              cancelText="Cancelar">
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+        <ion-note slot="helper">Defina para receber notificações</ion-note>
+      </ion-item>
+
+      <!-- Local (Opcional) -->
+      <ion-item>
+        <ion-label position="stacked">Local (Opcional)</ion-label>
+        <ion-input 
+          type="text" 
+          [(ngModel)]="tarefa.local" 
+          name="local" 
+          placeholder="Ex: Ginásio, Parque, Casa">
+        </ion-input>
+      </ion-item>
+
+      <!-- Intensidade -->
+      <ion-item>
+        <ion-label position="stacked">Intensidade *</ion-label>
+        <ion-select [(ngModel)]="tarefa.intensidade" name="intensidade" placeholder="Selecione a intensidade" (ionChange)="calcularPontos()">
+          <ion-select-option value="baixa">Baixo</ion-select-option>
+          <ion-select-option value="media">Médio</ion-select-option>
+          <ion-select-option value="alta">Alto</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Descrição -->
+      <ion-item>
+        <ion-label position="stacked">Descrição (Opcional)</ion-label>
+        <ion-textarea 
+          [(ngModel)]="tarefa.descricao" 
+          name="descricao" 
+          rows="4"
+          placeholder="Ex: Exercícios: flexões, abdominais, agachamentos">
+        </ion-textarea>
+      </ion-item>
+
+      <!-- Fatura de Pontos -->
+      <ion-card *ngIf="mostrarFatura" class="fatura-card">
+        <ion-card-header>
+          <ion-card-title class="fatura-title">
+            <ion-icon name="receipt-outline"></ion-icon>
+            Cálculo de Pontos
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="fatura-item">
+            <span class="fatura-label">Tipo de Atividade:</span>
+            <span class="fatura-valor">{{ getNomeTipoAtividade() }}</span>
+          </div>
+          <div class="fatura-item">
+            <span class="fatura-label">Pontos Base:</span>
+            <span class="fatura-valor">{{ pontosBaseTipo | number:'1.0-0' }} pts</span>
+          </div>
+          
+          <div class="fatura-item">
+            <span class="fatura-label">Duração:</span>
+            <span class="fatura-valor">{{ tarefa.duracao }} min</span>
+          </div>
+          <div class="fatura-item">
+            <span class="fatura-label">Multiplicador Duração:</span>
+            <span class="fatura-valor">{{ multiplicadorDuracaoValor }}x</span>
+          </div>
+          
+          <div class="fatura-item">
+            <span class="fatura-label">Intensidade:</span>
+            <span class="fatura-valor">{{ getNomeIntensidade() }}</span>
+          </div>
+          <div class="fatura-item">
+            <span class="fatura-label">Multiplicador Intensidade:</span>
+            <span class="fatura-valor">{{ multiplicadorIntensidadeValor }}x</span>
+          </div>
+          
+          <div class="fatura-divider"></div>
+          
+          <div class="fatura-total">
+            <span class="fatura-total-label">Pontos Ganhos:</span>
+            <span class="fatura-total-valor">
+              <ion-icon name="cash"></ion-icon>
+              {{ pontosCalculados }} pts
+            </span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Botões -->
+      <div class="button-group">
+        
+        <ion-button expand="block" color="success" (click)="guardarTarefa()" [disabled]="!tarefaForm.valid">
+          <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+          {{ modoEdicao ? 'Atualizar Tarefa' : 'Guardar Tarefa' }}
+        </ion-button>
+        
+        <ion-button expand="block" color="light" (click)="limparFormulario()">
+          <ion-icon name="refresh" slot="start"></ion-icon>
+          Limpar
+        </ion-button>
+      </div>
+    </form>
+  </div>
+</ion-content>
+
+<ion-tab-bar slot="bottom" class="custom-tab-bar">
+  <ion-tab-button tab="home" routerLink="/home" routerLinkActive="tab-selected">
+    <ion-icon name="home"></ion-icon>
+    <ion-label>Início</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="lista" routerLink="/lista-tarefas" routerLinkActive="tab-selected">
+    <ion-icon name="list"></ion-icon>
+    <ion-label>Lista</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="adicionar" class="add-button" routerLink="/adicionar-tarefa" routerLinkActive="tab-selected">
+    <ion-icon name="add-circle"></ion-icon>
+    <ion-label>Adicionar</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="stats" routerLink="/estatisticas" routerLinkActive="tab-selected">
+    <ion-icon name="stats-chart"></ion-icon>
+    <ion-label>Stats</ion-label>
+  </ion-tab-button>
+
+  <ion-tab-button tab="perfil" routerLink="/perfil" routerLinkActive="tab-selected">
+    <ion-icon name="person"></ion-icon>
+    <ion-label>Perfil</ion-label>
+  </ion-tab-button>
+</ion-tab-bar>

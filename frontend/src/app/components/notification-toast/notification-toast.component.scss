@@ -1,0 +1,142 @@
+.notification-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 320px;
+  max-width: 500px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10000;
+  backdrop-filter: blur(10px);
+  animation: slideDown 0.3s ease-out;
+
+  @media (max-width: 768px) {
+    top: 60px;
+    min-width: unset;
+    width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
+    left: 16px;
+    right: 16px;
+    transform: none;
+    padding: 12px 16px;
+  }
+
+  @media (max-width: 480px) {
+    top: 56px;
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    left: 12px;
+    right: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.notification-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    font-size: 20px;
+  }
+}
+
+.notification-message {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  flex: 1;
+  word-wrap: break-word;
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  margin-left: 12px;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Estilos por tipo de notificação
+.notification-info {
+  background: linear-gradient(135deg, #3880ff 0%, #5260ff 100%);
+  color: white;
+
+  .notification-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.notification-success {
+  background: linear-gradient(135deg, #2dd36f 0%, #10dc60 100%);
+  color: white;
+
+  .notification-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.notification-warning {
+  background: linear-gradient(135deg, #ffc409 0%, #ffca22 100%);
+  color: #000;
+
+  .notification-close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.notification-error {
+  background: linear-gradient(135deg, #eb445a 0%, #f04141 100%);
+  color: white;
+
+  .notification-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Animações
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
