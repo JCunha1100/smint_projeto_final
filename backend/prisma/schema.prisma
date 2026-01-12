@@ -1,0 +1,110 @@
+// Esquema Prisma para FitTrack API
+// Este esquema define a estrutura da base de dados para atividades e gamificação
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo de Utilizador
+// Contém dados de autenticação, gamificação e relações
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String?
+  avatar        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Campos de gamificação
+  totalScore    Float     @default(0)  // Score total acumulado
+  level         Int       @default(1)  // Nível atual
+  streak        Int       @default(0)  // Dias consecutivos de atividade
+  lastActiveAt  DateTime?              // Última data de atividade
+  
+  // Relações com outros modelos
+  activities    Activity[]
+  favorites     Favorite[]
+  notifications Notification[]
+  
+  // Índices para otimização de consultas
+  @@index([totalScore])
+  @@index([email])
+}
+
+// Modelo de Atividade
+// Representa uma sessão de exercício físico
+model Activity {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Campos principais da atividade
+  sportType   String    // RUNNING, CYCLING, GYM, FOOTBALL, SWIMMING, YOGA, HIIT, WALKING, TENNIS, BASKETBALL, HIKING, DANCING, BOXING, OTHER
+  duration    Int       // Duração em minutos
+  distance    Float?    // Distância em quilómetros (opcional)
+  date        DateTime  // Data da atividade
+  location    String?   // Localização (opcional)
+  intensity   String    // LOW, MODERATE, HIGH, EXTREME
+  notes       String?   // Notas adicionais (opcional)
+  completed   Boolean   @default(false) // Status de conclusão da atividade
+  
+  // Score calculado para esta atividade
+  score       Float     @default(0)
+  
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relação com favoritos
+  favoritedBy Favorite[]
+  
+  // Índices para otimização de consultas
+  @@index([userId])
+  @@index([sportType])
+  @@index([date])
+  @@index([intensity])
+}
+
+// Modelo de Favorito
+// Associa utilizadores às suas atividades favoritas
+model Favorite {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activityId  String
+  activity    Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  
+  // Restrição única para evitar duplicados
+  @@unique([userId, activityId])
+  @@index([userId])
+}
+
+// Modelo de Notificação
+// Notificações para engajamento do utilizador
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  type      String   // ACHIEVEMENT, MILESTONE, SYSTEM, REMINDER
+  isRead    Boolean  @default(false)
+  data      String?  // JSON string para dados adicionais
+  createdAt DateTime @default(now())
+  
+  // Índices para otimização de consultas
+  @@index([userId])
+  @@index([isRead])
+}
+
+// Tipos de desporto válidos:
+// RUNNING, CYCLING, GYM, FOOTBALL, SWIMMING, YOGA, HIIT, WALKING, TENNIS, BASKETBALL, HIKING, DANCING, BOXING, OTHER
+
+// Níveis de intensidade válidos:
+// LOW, MODERATE, HIGH, EXTREME
