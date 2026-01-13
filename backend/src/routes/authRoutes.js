@@ -1,7 +1,7 @@
 /**
  * Rotas de Autenticação
  * 
- * Handles todas as rotas relacionadas com autenticação de utilizadores:
+ * trata de todas as rotas relacionadas com autenticação de utilizadores:
  * - Registo (público)
  * - Login (público)
  * - Operações protegidas (perfil, atualização, eliminação)

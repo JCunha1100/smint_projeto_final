@@ -25,10 +25,10 @@ export async function testConnection() {
   try {
     // Executar query simples para testar conexão
     await prisma.$queryRaw`SELECT 1`;
-    console.log('✅ Conexão com a base de dados estabelecida com sucesso');
+    console.log('Conexão com a base de dados estabelecida com sucesso');
     return true;
   } catch (error) {
-    console.error('❌ Falha na conexão com a base de dados:', error.message);
+    console.error('Falha na conexão com a base de dados:', error.message);
     return false;
   }
 }

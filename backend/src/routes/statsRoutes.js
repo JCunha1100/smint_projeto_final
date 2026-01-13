@@ -1,7 +1,7 @@
 /**
  * Rotas de Estatísticas
  * 
- * Handles todas as rotas relacionadas com estatísticas e gamificação:
+ * Trata de todas as rotas relacionadas com estatísticas e gamificação:
  * - Ranking/Leaderboard
  * - Dashboard
  * - Resumos (semanal, mensal, anual)

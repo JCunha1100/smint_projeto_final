@@ -118,10 +118,10 @@ async function startServer() {
     console.log(`
     ╔═══════════════════════════════════════════════╗
     ║                                               ║
-    ║   🏃 Servidor FitTrack API                    ║
+    ║      Servidor FitTrack API                    ║
     ║                                               ║
-    ║   Ambiente: ${config.nodeEnv.padEnd(28)}║
-    ║   Porta: ${config.port.toString().padEnd(33)}║
+    ║   Ambiente: ${config.nodeEnv.padEnd(28)}      ║
+    ║   Porta: ${config.port.toString().padEnd(33)} ║
     ║                                               ║
     ║   Documentação: http://localhost:${config.port}/api        ║
     ║   Verificação: http://localhost:${config.port}/health      ║

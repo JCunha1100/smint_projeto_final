@@ -19,7 +19,7 @@ import { config } from '../config/index.js';
  * 
  * Calcula automaticamente o score baseado em:
  * - Duração (minutos)
- * - Intensidade (LOW, MODERATE, HIGH, EXTREME)
+ * - Intensidade (LOW, MODERATE, HIGH)
  * - Tipo de desporto (pesos diferentes para cada modalidade)
  * 
  * Atualiza o totalScore e verifica level up do utilizador
